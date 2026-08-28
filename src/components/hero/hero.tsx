@@ -123,6 +123,9 @@ function SerCatalogShowcase() {
   const [canScrollNext, setCanScrollNext] = useState(true);
   const thumbnailRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
+  // NUEVO: Bloqueo absoluto de scroll hasta que el usuario interactúe
+  const userInteracted = useRef(false);
+
   const updateState = useCallback(() => {
     if (!emblaApi) return;
 
@@ -130,6 +133,9 @@ function SerCatalogShowcase() {
     setSelectedIndex(index);
     setCanScrollPrev(emblaApi.canScrollPrev());
     setCanScrollNext(emblaApi.canScrollNext());
+
+    // NUEVO: Si no hay interacción (es carga automática), detenemos el scroll
+    if (!userInteracted.current) return;
 
     thumbnailRefs.current[index]?.scrollIntoView({
       behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -144,10 +150,16 @@ function SerCatalogShowcase() {
     if (!emblaApi) return;
 
     updateState();
+
+    // NUEVO: Escuchamos si arrastran la foto con ratón o dedo
+    const markInteracted = () => { userInteracted.current = true; };
+    emblaApi.on("pointerDown", markInteracted);
+
     emblaApi.on("select", updateState);
     emblaApi.on("reInit", updateState);
 
     return () => {
+      emblaApi.off("pointerDown", markInteracted);
       emblaApi.off("select", updateState);
       emblaApi.off("reInit", updateState);
     };
@@ -156,11 +168,13 @@ function SerCatalogShowcase() {
   const handleKeys = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "ArrowLeft") {
       event.preventDefault();
+      userInteracted.current = true; // Interacción por teclado
       emblaApi?.scrollPrev();
     }
 
     if (event.key === "ArrowRight") {
       event.preventDefault();
+      userInteracted.current = true; // Interacción por teclado
       emblaApi?.scrollNext();
     }
   };
@@ -228,7 +242,10 @@ function SerCatalogShowcase() {
           <div className="flex shrink-0 gap-1.5">
             <button
               type="button"
-              onClick={() => emblaApi?.scrollPrev()}
+              onClick={() => {
+                userInteracted.current = true; // Interacción por clic
+                emblaApi?.scrollPrev();
+              }}
               disabled={!canScrollPrev}
               aria-label="Vista anterior"
               className="grid size-9 place-items-center rounded-md bg-[#081a2f] text-white transition-opacity disabled:cursor-default disabled:opacity-20 sm:size-10"
@@ -237,7 +254,10 @@ function SerCatalogShowcase() {
             </button>
             <button
               type="button"
-              onClick={() => emblaApi?.scrollNext()}
+              onClick={() => {
+                userInteracted.current = true; // Interacción por clic
+                emblaApi?.scrollNext();
+              }}
               disabled={!canScrollNext}
               aria-label="Vista siguiente"
               className="grid size-9 place-items-center rounded-md bg-[#081a2f] text-white transition-opacity disabled:cursor-default disabled:opacity-20 sm:size-10"
@@ -262,7 +282,10 @@ function SerCatalogShowcase() {
                 thumbnailRefs.current[index] = node;
               }}
               type="button"
-              onClick={() => emblaApi?.scrollTo(index)}
+              onClick={() => {
+                userInteracted.current = true; // Interacción por clic
+                emblaApi?.scrollTo(index);
+              }}
               aria-label={`Mostrar ${capture.label}`}
               aria-current={active ? "true" : undefined}
               className={`group min-w-0 flex-[0_0_42%] snap-start rounded-lg border p-1.5 text-left transition-[opacity,border-color,transform] sm:basis-[31%] lg:basis-[23%] ${
