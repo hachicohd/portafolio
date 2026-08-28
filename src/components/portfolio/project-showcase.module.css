@@ -1,0 +1,166 @@
+/* src/components/portfolio/project-showcase.module.css */
+.showcase {
+    --project-accent: #2584ff;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+  }
+  
+  .viewerShell {
+    overflow: hidden;
+    background: #e9eff6;
+    border: 1px solid rgba(8, 26, 47, .16);
+    border-radius: 16px;
+    box-shadow: 0 24px 60px rgba(3, 11, 20, .17);
+  }
+  
+  .browserBar {
+    height: 48px;
+    padding-inline: 18px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 16px;
+    color: rgba(8, 26, 47, .62);
+    background: #f3f7fc;
+    border-bottom: 1px solid rgba(8, 26, 47, .14);
+    font: 600 10px/1 var(--font-inter), sans-serif;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+  
+  .browserBar > :last-child { justify-self: end; }
+  .browserTitle { max-width: 34ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dots { display: flex; gap: 6px; }
+  .dots i { width: 7px; height: 7px; border-radius: 50%; background: rgba(8, 26, 47, .26); }
+  
+  .viewport { overflow: hidden; background: #dce5ef; }
+  .track { display: flex; touch-action: pan-y pinch-zoom; }
+  
+  .slide {
+    position: relative;
+    flex: 0 0 100%;
+    min-width: 0;
+    /* 🟢 CORRECCIÓN 1: Ajustado al formato de monitores reales 16:9 para evitar líneas */
+    aspect-ratio: 16 / 9;
+    margin: 0;
+    overflow: hidden;
+    /* 🟢 Fondo oscuro por si acaso una imagen es muy alta, el borde parecerá un marco premium */
+    background: #081a2f; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* 🟢 CORRECCIÓN 2: Volvemos a cover. Al ser 16:9 ya no cortará la imagen y llenará todo el espacio */
+  .image { object-fit: cover; object-position: top center; }
+  
+  .viewerCaption {
+    min-height: 54px;
+    padding: 8px 10px 8px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    color: #081a2f;
+    background: #f3f7fc;
+    border-top: 1px solid rgba(8, 26, 47, .14);
+    font: 650 12px/1.2 var(--font-inter), sans-serif;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+  
+  .arrows { display: flex; gap: 6px; }
+  .arrows button {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    color: #f3f7fc;
+    background: #081a2f;
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .arrows button:disabled { opacity: .25; cursor: default; }
+  .arrows button:focus-visible, .thumbnail:focus-visible { outline: 3px solid #2584ff; outline-offset: 3px; }
+  
+  .thumbnailRail {
+    margin-top: 14px;
+    padding: 2px 2px 12px;
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(243,247,252,.35) transparent;
+  }
+  
+  .thumbnail {
+    flex: 0 0 clamp(144px, 18vw, 210px);
+    padding: 7px;
+    scroll-snap-align: start;
+    color: rgba(243, 247, 252, .65);
+    background: rgba(243, 247, 252, .035);
+    border: 1px solid rgba(243, 247, 252, .13);
+    border-radius: 10px;
+    opacity: .64;
+    cursor: pointer;
+    text-align: left;
+    transition: opacity 180ms ease, border-color 180ms ease, transform 180ms ease;
+  }
+  
+  .thumbnail:hover { opacity: .86; }
+  .thumbnail[data-active] {
+    opacity: 1;
+    border-color: var(--project-accent);
+    box-shadow: inset 0 -2px 0 var(--project-accent);
+  }
+  
+  .thumbnailImage {
+    position: relative;
+    display: block;
+    width: 100%;
+    /* 🟢 CORRECCIÓN 3: Sincronizamos las miniaturas al mismo formato 16:9 */
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #081a2f;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .thumbnailMeta {
+    padding: 9px 2px 2px;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 9px;
+    align-items: baseline;
+    font: 600 10px/1.2 var(--font-inter), sans-serif;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+  .thumbnailMeta b { color: var(--project-accent); font-variant-numeric: tabular-nums; }
+  .thumbnailMeta span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  
+  [data-compact] .browserBar { height: 40px; }
+  [data-compact] .viewerCaption { min-height: 46px; }
+  [data-compact] .thumbnail { flex-basis: clamp(118px, 13vw, 164px); }
+  
+  @media (max-width: 680px) {
+    .viewerShell { border-radius: 12px; }
+    .browserBar { height: 42px; grid-template-columns: 1fr auto; }
+    .browserTitle { display: none; }
+    .slide { aspect-ratio: 390 / 844; }
+    .arrows button { width: 44px; height: 44px; }
+    .thumbnail { flex-basis: 42vw; }
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    .thumbnail { transition: none; }
+    .thumbnailRail { scroll-behavior: auto; }
+  }

@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+@theme {
+  /* Variables de BlueFIn */
+  --color-bf-bg: #05111f;
+  --color-bf-bg-elevated: #0a1a2f;
+  --color-bf-bg-light: #f3f7fc;
+  --color-bf-bg-light-alt: #f4f8fb;
+  --color-bf-text-on-dark: #f3f7fc;
+  --color-bf-text-on-light: #081a2f;
+  --color-bf-blue-deep: #0c4a8a;
+  --color-bf-blue: #2584ff;
+  --color-bf-blue-light: #43a5ff;
+  --color-bf-cyan: #70d6ff;
+  --color-bf-border-dark: rgba(243, 247, 252, 0.14);
+  --color-bf-border-light: rgba(8, 26, 47, 0.14);
+  --color-bf-muted-dark: rgba(243, 247, 252, 0.68);
+  --color-bf-muted-light: rgba(8, 26, 47, 0.66);
+
+  /* Conexión de fuentes de Next.js a Tailwind */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-bf-bg);
+    color: var(--color-bf-text-on-dark);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background-color: rgba(37, 132, 255, 0.3); /* bf-blue opacity 30% */
+    color: white;
+  }
+}
+
+/* Fondo atmosférico de BlueFIn */
+@utility bg-bluefin-atmosphere {
+  background-color: var(--color-bf-bg);
+  background-image: 
+    radial-gradient(circle at 15% 0%, rgba(37, 132, 255, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 85% 100%, rgba(112, 214, 255, 0.05) 0%, transparent 40%);
+}
+
+/* Ocultar barra de scroll pero mantener funcionalidad */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
