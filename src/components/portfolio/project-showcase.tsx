@@ -39,6 +39,9 @@ export function ProjectShowcase({ project, compact = false }: Props) {
   const [canScrollNext, setCanScrollNext] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const thumbnailRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  
+  // NUEVO: Referencia para saber si es la carga inicial de la página
+  const isFirstRender = useRef(true);
 
   const syncState = useCallback(() => {
     if (!emblaApi) return;
@@ -47,6 +50,9 @@ export function ProjectShowcase({ project, compact = false }: Props) {
     setSelectedIndex(index);
     setCanScrollPrev(emblaApi.canScrollPrev());
     setCanScrollNext(emblaApi.canScrollNext());
+
+    // NUEVO: Si es la primera vez que carga, cancelamos el scroll automático de la página.
+    if (isFirstRender.current) return;
 
     thumbnailRefs.current[index]?.scrollIntoView({
       behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -61,6 +67,9 @@ export function ProjectShowcase({ project, compact = false }: Props) {
     if (!emblaApi) return;
 
     syncState();
+    // NUEVO: Después de sincronizar por primera vez, desactivamos el bloqueo
+    isFirstRender.current = false; 
+
     emblaApi.on("select", syncState);
     emblaApi.on("reInit", syncState);
 
@@ -296,7 +305,7 @@ export function ProjectShowcase({ project, compact = false }: Props) {
               onClick={() => setExpanded(false)}
               className="grid size-11 shrink-0 place-items-center rounded-lg border border-white/15 bg-white/5 text-lg text-white transition-colors hover:bg-white/10"
               aria-label="Cerrar vista ampliada"
-              autoFocus
+              autoFocus 
             >
               ×
             </button>

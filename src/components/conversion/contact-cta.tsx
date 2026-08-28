@@ -1,12 +1,10 @@
-import { siteConfig } from "../../data/site-config";
 import { ArrowUpRight } from "lucide-react";
 
 const INSTAGRAM_URL = "https://www.instagram.com/bluefinestudios";
 
 export function ContactCta() {
-  const whatsappUrl = `https://wa.me/${
-    siteConfig.contact.whatsapp
-  }?text=${encodeURIComponent(siteConfig.contact.message)}`;
+  // 🟢 Enlace de WhatsApp con tu número y mensaje predeterminado
+  const whatsappUrl = "https://wa.me/584147496774?text=Busco%20m%C3%A1s%20informaci%C3%B3n";
 
   return (
     <section
@@ -25,8 +23,6 @@ export function ContactCta() {
     >
       {/* ======================================================
           VIDEO DE FONDO
-          Archivo:
-          /public/videoblue.mp4
          ====================================================== */}
       <video
         className="
@@ -47,8 +43,7 @@ export function ContactCta() {
       </video>
 
       {/* ======================================================
-          CAPA GENERAL OSCURA
-          Mantiene visible el video pero protege la lectura
+          CAPA GENERAL OSCURA (Reducida a /20 para dar más luz)
          ====================================================== */}
       <div
         aria-hidden="true"
@@ -56,12 +51,12 @@ export function ContactCta() {
           pointer-events-none
           absolute inset-0
           -z-20
-          bg-[#020814]/50
+          bg-[#020814]/20
         "
       />
 
       {/* ======================================================
-          OSCURECIMIENTO CENTRAL DETRÁS DEL COPY
+          OSCURECIMIENTO CENTRAL (Más suave para dejar ver el video)
          ====================================================== */}
       <div
         aria-hidden="true"
@@ -69,13 +64,12 @@ export function ContactCta() {
           pointer-events-none
           absolute inset-0
           -z-20
-          bg-[radial-gradient(circle_at_center,rgba(2,8,20,0.72)_0%,rgba(2,8,20,0.46)_40%,rgba(2,8,20,0.18)_72%,rgba(2,8,20,0.40)_100%)]
+          bg-[radial-gradient(circle_at_center,rgba(2,8,20,0.45)_0%,rgba(2,8,20,0.20)_40%,transparent_75%,rgba(2,8,20,0.25)_100%)]
         "
       />
 
       {/* ======================================================
-          VIÑETA SUPERIOR E INFERIOR
-          Hace que el video se integre con el resto del sitio
+          VIÑETA SUPERIOR E INFERIOR (Suavizada)
          ====================================================== */}
       <div
         aria-hidden="true"
@@ -83,7 +77,7 @@ export function ContactCta() {
           pointer-events-none
           absolute inset-0
           -z-10
-          bg-[linear-gradient(to_bottom,rgba(3,11,20,0.76)_0%,transparent_28%,transparent_68%,rgba(3,11,20,0.88)_100%)]
+          bg-[linear-gradient(to_bottom,rgba(3,11,20,0.45)_0%,transparent_30%,transparent_70%,rgba(3,11,20,0.55)_100%)]
         "
       />
 
@@ -106,7 +100,7 @@ export function ContactCta() {
             text-[10px]
             font-semibold uppercase
             tracking-[0.22em]
-            text-white/65
+            text-white/85
             md:mb-8
             md:text-[11px]
           "
@@ -126,7 +120,7 @@ export function ContactCta() {
             leading-[0.94]
             tracking-[-0.045em]
             text-white
-            drop-shadow-[0_4px_25px_rgba(0,0,0,0.6)]
+            drop-shadow-[0_4px_25px_rgba(0,0,0,0.8)]
             md:text-[clamp(3.7rem,5.5vw,5.4rem)]
           "
         >
@@ -141,8 +135,8 @@ export function ContactCta() {
             font-sans
             text-[16px]
             leading-7
-            text-white/75
-            drop-shadow-[0_3px_15px_rgba(0,0,0,0.55)]
+            text-white/90
+            drop-shadow-[0_3px_15px_rgba(0,0,0,0.75)]
             md:mt-8
             md:text-[18px]
             md:leading-8
@@ -227,8 +221,8 @@ export function ContactCta() {
               items-center justify-center
               gap-3
               rounded-xl
-              border border-white/25
-              bg-black/15
+              border border-white/35
+              bg-black/30
               px-9
               text-[14px]
               font-semibold
@@ -238,8 +232,8 @@ export function ContactCta() {
               duration-300
 
               hover:-translate-y-0.5
-              hover:border-white/45
-              hover:bg-white/10
+              hover:border-white/60
+              hover:bg-black/40
 
               focus-visible:outline
               focus-visible:outline-2
@@ -254,7 +248,7 @@ export function ContactCta() {
             <ArrowUpRight
               size={16}
               className="
-                text-white/65
+                text-white/80
                 transition-all duration-300
                 group-hover:translate-x-0.5
                 group-hover:-translate-y-0.5
@@ -270,7 +264,7 @@ export function ContactCta() {
             text-[9px]
             font-medium uppercase
             tracking-[0.2em]
-            text-white/35
+            text-white/50
             md:mt-11
             md:text-[10px]
           "
