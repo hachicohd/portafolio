@@ -40,8 +40,8 @@ export function ProjectShowcase({ project, compact = false }: Props) {
   const [expanded, setExpanded] = useState(false);
   const thumbnailRefs = useRef<Array<HTMLButtonElement | null>>([]);
   
-  // NUEVO: Referencia para saber si es la carga inicial de la página
-  const isFirstRender = useRef(true);
+  // NUEVO: Bloqueo absoluto. Solo hacemos scroll si hay "interacción humana"
+  const userInteracted = useRef(false);
 
   const syncState = useCallback(() => {
     if (!emblaApi) return;
@@ -51,8 +51,8 @@ export function ProjectShowcase({ project, compact = false }: Props) {
     setCanScrollPrev(emblaApi.canScrollPrev());
     setCanScrollNext(emblaApi.canScrollNext());
 
-    // NUEVO: Si es la primera vez que carga, cancelamos el scroll automático de la página.
-    if (isFirstRender.current) return;
+    // Si el carrusel se mueve solo (por carga o re-ajuste), NO hacemos scroll
+    if (!userInteracted.current) return;
 
     thumbnailRefs.current[index]?.scrollIntoView({
       behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -67,13 +67,16 @@ export function ProjectShowcase({ project, compact = false }: Props) {
     if (!emblaApi) return;
 
     syncState();
-    // NUEVO: Después de sincronizar por primera vez, desactivamos el bloqueo
-    isFirstRender.current = false; 
+    
+    // Escuchamos si el usuario toca o arrastra la imagen principal (táctil o mouse)
+    const markInteracted = () => { userInteracted.current = true; };
+    emblaApi.on("pointerDown", markInteracted);
 
     emblaApi.on("select", syncState);
     emblaApi.on("reInit", syncState);
 
     return () => {
+      emblaApi.off("pointerDown", markInteracted);
       emblaApi.off("select", syncState);
       emblaApi.off("reInit", syncState);
     };
@@ -100,11 +103,13 @@ export function ProjectShowcase({ project, compact = false }: Props) {
   const handleKeys = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "ArrowLeft") {
       event.preventDefault();
+      userInteracted.current = true; // Interacción por teclado
       emblaApi?.scrollPrev();
     }
 
     if (event.key === "ArrowRight") {
       event.preventDefault();
+      userInteracted.current = true; // Interacción por teclado
       emblaApi?.scrollNext();
     }
   };
@@ -214,7 +219,10 @@ export function ProjectShowcase({ project, compact = false }: Props) {
             </button>
             <button
               type="button"
-              onClick={() => emblaApi?.scrollPrev()}
+              onClick={() => {
+                userInteracted.current = true; // Interacción por clic
+                emblaApi?.scrollPrev();
+              }}
               disabled={!canScrollPrev}
               aria-label={`Vista anterior de ${project.client}`}
               className="grid size-11 place-items-center rounded-lg border border-[var(--project-border)] bg-[var(--project-chrome-ink)] text-[var(--project-chrome)] transition-[opacity,transform] hover:-translate-y-px disabled:cursor-default disabled:opacity-20 disabled:hover:translate-y-0"
@@ -223,7 +231,10 @@ export function ProjectShowcase({ project, compact = false }: Props) {
             </button>
             <button
               type="button"
-              onClick={() => emblaApi?.scrollNext()}
+              onClick={() => {
+                userInteracted.current = true; // Interacción por clic
+                emblaApi?.scrollNext();
+              }}
               disabled={!canScrollNext}
               aria-label={`Vista siguiente de ${project.client}`}
               className="grid size-11 place-items-center rounded-lg border border-[var(--project-border)] bg-[var(--project-chrome-ink)] text-[var(--project-chrome)] transition-[opacity,transform] hover:-translate-y-px disabled:cursor-default disabled:opacity-20 disabled:hover:translate-y-0"
@@ -248,7 +259,10 @@ export function ProjectShowcase({ project, compact = false }: Props) {
                 thumbnailRefs.current[index] = node;
               }}
               type="button"
-              onClick={() => emblaApi?.scrollTo(index)}
+              onClick={() => {
+                userInteracted.current = true; // Interacción por clic
+                emblaApi?.scrollTo(index);
+              }}
               aria-label={`Mostrar ${view.label}`}
               aria-current={active ? "true" : undefined}
               className={`group min-w-0 flex-[0_0_44%] snap-start rounded-[10px] border p-1.5 text-left transition-[opacity,border-color,transform,background-color] sm:basis-[31%] lg:basis-[23.5%] ${
